@@ -9,11 +9,11 @@ export class Server {
   public static async run() {
     // @ts-ignore
     const openaiConfig = <OpenAIConfing>cds.env.for("app")["openai"];
-    if (!openaiConfig.apiKey) {
-      throw new Error(
-        `No OpenAI API token provided! Please set the environment variable "{ 'app_openai': { 'apiKey': 'xxx' } }"`
-      );
-    }
+    // if (!openaiConfig.apiKey) {
+    //   throw new Error(
+    //     `No OpenAI API token provided! Please set the environment variable "{ 'app_openai': { 'apiKey': 'xxx' } }"`
+    //   );
+    // }
 
     useContainer(Container);
     Container.set("openai-config", openaiConfig);

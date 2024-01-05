@@ -40,7 +40,7 @@
     "start:dev": "npm run build:cds && npm run copy:types && nodemon",
     "deploy:local": "cds deploy --to sqlite:chat.db",
     "build": "run-s build:cds copy:types build:ts",
-    "build:cds": "echo 'Compiling cds sources...' && cds2types --cds ./srv/index.cds --output ./src/types/ --prefix I -f && cds build && cp .cdsrc.json gen/srv",
+    "build:cds": "echo 'Compiling cds sources...' && cds2types --cds ./srv/index.cds --output ./src/types/ --prefix I -f && cds build && npx copyfiles -f .cdsrc.json gen/srv",
     "copy:types": "npx copyfiles -f ./src/types/*Service.ts ./../ui/webapp/types/",
     "build:ts": "echo 'Compiling *.ts sources...' && npx tsc"
   },

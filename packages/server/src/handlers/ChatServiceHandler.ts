@@ -4,20 +4,22 @@ import { Inject, Service } from "typedi";
 import ChatBuilder from "../services/ChatBuilder";
 import CompletionStream from "../services/CompletionStream";
 import OpenAIService from "../services/OpenAIService";
+import BTPOpenAIService from "../services/BTPOpenAIService";
 import { FuncGetCompletionReturn, FuncGetModelsReturn } from "../types/ChatService";
 
 @Handler()
 @Service()
 export default class ChatServiceHandler {
   @Inject()
-  private openAIService: OpenAIService;
+  //private openAIService: OpenAIService;
+  private BTPOpenAIService: BTPOpenAIService;
 
   @Inject()
   private chatBuilder: ChatBuilder;
 
   @Func("getModels")
   public async getModels(@Req() req: Request): Promise<FuncGetModelsReturn> {
-    const models = await this.openAIService.readModels().catch((error) => {
+    const models = await this.BTPOpenAIService.readModels().catch((error) => {
       req.notify(500, error.message);
     });
     return <FuncGetModelsReturn>models;
@@ -34,10 +36,10 @@ export default class ChatServiceHandler {
 
     if (model.startsWith("gpt-3.5") || model.startsWith("gpt-4")) {
       const messages = await this.chatBuilder.getChatAsMessages(chatId, personalityId);
-      response = await this.openAIService.createChatCompletion(messages, model);
+      response = await this.BTPOpenAIService.createChatCompletion(messages, model);
     } else {
       const prompt = await this.chatBuilder.getChatAsPrompt(chatId, personalityId);
-      response = await this.openAIService.createCompletion(prompt, model);
+      response = await this.BTPOpenAIService.createCompletion(prompt, model);
     }
 
     return <FuncGetCompletionReturn>{
@@ -65,10 +67,10 @@ export default class ChatServiceHandler {
 
     if (model.startsWith("gpt-3.5") || model.startsWith("gpt-4")) {
       const messages = await this.chatBuilder.getChatAsMessages(chatId, personalityId);
-      stream = await this.openAIService.createChatCompletionAsStream(messages, model);
+      stream = await this.BTPOpenAIService.createChatCompletionAsStream(messages, model);
     } else {
       const prompt = await this.chatBuilder.getChatAsPrompt(chatId, personalityId);
-      stream = await this.openAIService.createCompletionAsStream(prompt, model);
+      stream = await this.BTPOpenAIService.createCompletionAsStream(prompt, model);
     }
 
     await new Promise((resolve) => {
